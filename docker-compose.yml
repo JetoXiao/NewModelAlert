@@ -1,0 +1,39 @@
+services:
+  model-alert:
+    build: .
+    container_name: new-model-alert
+    restart: unless-stopped
+    read_only: true
+    cpus: "0.50"
+    mem_limit: 768m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    environment:
+      TZ: Asia/Shanghai
+      WECHAT_WEBHOOK_URL: ${WECHAT_WEBHOOK_URL}
+      POLL_INTERVAL_MINUTES: ${POLL_INTERVAL_MINUTES:-30}
+      EVENT_SETTLE_MINUTES: ${EVENT_SETTLE_MINUTES:-45}
+      BOOTSTRAP_NOTIFY: ${BOOTSTRAP_NOTIFY:-false}
+      DRY_RUN: ${DRY_RUN:-false}
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_BASE_URL: ${LLM_BASE_URL:-https://api.openai.com/v1}
+      LLM_MODEL: ${LLM_MODEL:-}
+    volumes:
+      - ./config:/app/config:ro
+      - ./data:/app/data
+    tmpfs:
+      - /tmp:size=64m,noexec,nosuid,nodev
+    networks:
+      - model-alert-net
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  model-alert-net:
+    driver: bridge

@@ -1,0 +1,491 @@
+providers:
+  - id: openai
+    name: OpenAI
+    region: US
+    priority: P0
+    model_families: [GPT, o-series, Codex, Sora]
+    push_level: immediate
+    sources:
+      - type: rss
+        name: OpenAI Blog
+        url: https://openai.com/news/rss.xml
+        credibility: S
+      - type: webpage
+        name: OpenAI Models Docs
+        url: https://platform.openai.com/docs/models
+        credibility: S
+      - type: webpage
+        name: OpenAI Pricing
+        url: https://platform.openai.com/docs/pricing
+        credibility: S
+
+  - id: anthropic
+    name: Anthropic
+    region: US
+    priority: P0
+    model_families: [Claude]
+    push_level: immediate
+    sources:
+      - type: webpage
+        name: Anthropic News
+        url: https://www.anthropic.com/news
+        credibility: S
+      - type: webpage
+        name: Claude Models Docs
+        url: https://docs.anthropic.com/en/docs/about-claude/models/overview
+        credibility: S
+      - type: webpage
+        name: Claude Pricing
+        url: https://www.anthropic.com/pricing
+        credibility: S
+
+  - id: google_deepmind
+    name: Google DeepMind
+    region: US
+    priority: P0
+    model_families: [Gemini, Imagen, Veo]
+    push_level: immediate
+    sources:
+      - type: rss
+        name: Google DeepMind Blog
+        url: https://deepmind.google/blog/rss.xml
+        credibility: S
+      - type: webpage
+        name: Gemini Models Docs
+        url: https://ai.google.dev/gemini-api/docs/models
+        credibility: S
+      - type: webpage
+        name: Gemini Release Notes
+        url: https://ai.google.dev/gemini-api/docs/changelog
+        credibility: S
+
+  - id: meta
+    name: Meta
+    region: US
+    priority: P0
+    model_families: [Llama]
+    push_level: immediate
+    sources:
+      - type: webpage
+        name: Meta AI Blog
+        url: https://ai.meta.com/blog/
+        credibility: S
+      - type: webpage
+        name: Llama Models
+        url: https://www.llama.com/
+        credibility: S
+      - type: github
+        name: Meta Llama GitHub
+        repo: meta-llama/llama-models
+        credibility: A
+
+  - id: xai
+    name: xAI
+    region: US
+    priority: P0
+    model_families: [Grok]
+    push_level: immediate
+    sources:
+      - type: webpage
+        name: xAI News
+        url: https://x.ai/news
+        credibility: S
+      - type: webpage
+        name: xAI Docs Models
+        url: https://docs.x.ai/docs/models
+        credibility: S
+
+  - id: deepseek
+    name: DeepSeek
+    region: CN
+    priority: P0
+    model_families: [DeepSeek]
+    push_level: immediate
+    sources:
+      - type: webpage
+        name: DeepSeek Change Log
+        url: https://api-docs.deepseek.com/updates
+        credibility: S
+      - type: webpage
+        name: DeepSeek List Models
+        url: https://api-docs.deepseek.com/api/list-models
+        credibility: S
+      - type: webpage
+        name: DeepSeek Models
+        url: https://api-docs.deepseek.com/quick_start/pricing
+        credibility: S
+      - type: github
+        name: DeepSeek GitHub
+        repo: deepseek-ai/DeepSeek-V3
+        credibility: A
+
+  - id: alibaba_qwen
+    name: Alibaba Qwen
+    region: CN
+    priority: P0
+    model_families: [Qwen, 通义千问]
+    push_level: immediate
+    sources:
+      - type: webpage
+        name: Qwen Blog
+        url: https://qwenlm.github.io/blog/
+        credibility: S
+      - type: webpage
+        name: Alibaba Cloud Model Studio
+        url: https://help.aliyun.com/zh/model-studio/models
+        credibility: S
+      - type: github
+        name: Qwen GitHub
+        repo: QwenLM/Qwen3
+        credibility: A
+
+  - id: zhipu
+    name: Zhipu AI
+    region: CN
+    priority: P0
+    model_families: [GLM, 智谱清言]
+    push_level: immediate
+    sources:
+      - type: webpage
+        name: Zhipu Models
+        url: https://docs.bigmodel.cn/cn/guide/start/model-overview
+        credibility: S
+      - type: webpage
+        name: Zhipu Pricing
+        url: https://open.bigmodel.cn/pricing
+        credibility: S
+
+  - id: moonshot
+    name: Moonshot AI
+    region: CN
+    priority: P0
+    model_families: [Kimi, Moonshot]
+    push_level: immediate
+    sources:
+      - type: webpage
+        name: Moonshot API Models
+        url: https://platform.moonshot.cn/docs/guide/migrating-from-openai-to-kimi-k2
+        credibility: S
+      - type: webpage
+        name: Moonshot Pricing
+        url: https://platform.moonshot.cn/docs/pricing
+        credibility: S
+
+  - id: bytedance_doubao
+    name: ByteDance Doubao
+    region: CN
+    priority: P0
+    model_families: [Doubao, 豆包]
+    push_level: immediate
+    sources:
+      - type: webpage
+        name: Volcano Engine Model Updates
+        url: https://www.volcengine.com/docs/82379/1099455
+        credibility: S
+      - type: webpage
+        name: Doubao Models
+        url: https://www.volcengine.com/docs/82379/1330310
+        credibility: S
+
+  - id: baidu_ernie
+    name: Baidu ERNIE
+    region: CN
+    priority: P0
+    model_families: [ERNIE, 文心]
+    push_level: immediate
+    sources:
+      - type: webpage
+        name: Baidu Qianfan Models
+        url: https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Fm2vrveyu
+        credibility: S
+      - type: webpage
+        name: Baidu Qianfan Updates
+        url: https://cloud.baidu.com/doc/WENXINWORKSHOP/s/hlrk4akp7
+        credibility: S
+
+  - id: tencent_hunyuan
+    name: Tencent Hunyuan
+    region: CN
+    priority: P0
+    model_families: [Hunyuan, 混元]
+    push_level: immediate
+    sources:
+      - type: webpage
+        name: Hunyuan Models
+        url: https://cloud.tencent.com/document/product/1729/104753
+        credibility: S
+      - type: webpage
+        name: Hunyuan Updates
+        url: https://cloud.tencent.com/document/product/1729/97731
+        credibility: S
+
+  - id: minimax
+    name: MiniMax
+    region: CN
+    priority: P0
+    model_families: [MiniMax, abab, Hailuo]
+    push_level: immediate
+    sources:
+      - type: webpage
+        name: MiniMax Models
+        url: https://platform.minimaxi.com/document/Models
+        credibility: S
+      - type: webpage
+        name: MiniMax Changelog
+        url: https://platform.minimaxi.com/document/Announcement
+        credibility: S
+
+  - id: mistral
+    name: Mistral AI
+    region: EU
+    priority: P0
+    model_families: [Mistral, Mixtral, Codestral, Le Chat]
+    push_level: immediate
+    sources:
+      - type: webpage
+        name: Mistral News
+        url: https://mistral.ai/news/
+        credibility: S
+      - type: webpage
+        name: Mistral Models
+        url: https://docs.mistral.ai/models/overview
+        credibility: S
+
+  - id: cohere
+    name: Cohere
+    region: CA
+    priority: P0
+    model_families: [Command, Embed, Rerank]
+    push_level: immediate
+    sources:
+      - type: rss
+        name: Cohere Blog
+        url: https://cohere.com/blog/rss.xml
+        credibility: S
+      - type: webpage
+        name: Cohere Models
+        url: https://docs.cohere.com/docs/models
+        credibility: S
+
+  - id: amazon
+    name: Amazon
+    region: US
+    priority: P1
+    model_families: [Nova, Titan]
+    push_level: normal
+    sources:
+      - type: webpage
+        name: Amazon Bedrock Models
+        url: https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html
+        credibility: S
+      - type: rss
+        name: AWS Machine Learning Blog
+        url: https://aws.amazon.com/blogs/machine-learning/feed/
+        credibility: A
+
+  - id: microsoft
+    name: Microsoft
+    region: US
+    priority: P1
+    model_families: [Phi, MAI, Azure AI Foundry]
+    push_level: normal
+    sources:
+      - type: webpage
+        name: Azure AI Foundry Models
+        url: https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/models-sold-directly-by-azure
+        credibility: S
+      - type: webpage
+        name: Azure AI Foundry Catalog
+        url: https://ai.azure.com/catalog
+        credibility: A
+
+  - id: nvidia
+    name: NVIDIA
+    region: US
+    priority: P1
+    model_families: [Nemotron]
+    push_level: normal
+    sources:
+      - type: rss
+        name: NVIDIA AI Blog
+        url: https://blogs.nvidia.com/blog/category/deep-learning/feed/
+        credibility: A
+      - type: webpage
+        name: NVIDIA NIM Models
+        url: https://docs.nvidia.com/nim/index.html
+        credibility: S
+
+  - id: ai21
+    name: AI21 Labs
+    region: IL
+    priority: P1
+    model_families: [Jamba]
+    push_level: normal
+    sources:
+      - type: webpage
+        name: AI21 Models
+        url: https://docs.ai21.com/docs/jamba-foundation-models
+        credibility: S
+      - type: webpage
+        name: AI21 Changelog
+        url: https://docs.ai21.com/changelog
+        credibility: S
+      - type: rss
+        name: AI21 Blog
+        url: https://www.ai21.com/blog/rss.xml
+        credibility: A
+
+  - id: oneai
+    name: 01.AI
+    region: CN
+    priority: P1
+    model_families: [Yi, 零一万物]
+    push_level: normal
+    sources:
+      - type: webpage
+        name: 01.AI Models
+        url: https://platform.lingyiwanwu.com/docs#模型与计费
+        credibility: S
+      - type: github
+        name: Yi GitHub
+        repo: 01-ai/Yi
+        credibility: A
+
+  - id: baichuan
+    name: Baichuan
+    region: CN
+    priority: P1
+    model_families: [Baichuan, 百川]
+    push_level: normal
+    sources:
+      - type: webpage
+        name: Baichuan Models
+        url: https://platform.baichuan-ai.com/docs/api
+        credibility: S
+
+  - id: iflytek
+    name: iFlytek
+    region: CN
+    priority: P1
+    model_families: [Spark, 星火]
+    push_level: normal
+    sources:
+      - type: webpage
+        name: iFlytek Spark Docs
+        url: https://www.xfyun.cn/doc/spark/Web.html
+        credibility: S
+      - type: webpage
+        name: iFlytek Spark Pricing
+        url: https://xinghuo.xfyun.cn/sparkapi
+        credibility: S
+
+  - id: sensetime
+    name: SenseTime
+    region: CN
+    priority: P1
+    model_families: [SenseNova, 日日新]
+    push_level: normal
+    sources:
+      - type: webpage
+        name: SenseNova Docs
+        url: https://console.sensecore.cn/help/docs/model-as-a-service/nova/overview
+        credibility: S
+
+  - id: stepfun
+    name: StepFun
+    region: CN
+    priority: P1
+    model_families: [Step, 阶跃星辰]
+    push_level: normal
+    sources:
+      - type: webpage
+        name: StepFun Models
+        url: https://platform.stepfun.com/docs/zh/guides/models/overview
+        credibility: S
+      - type: webpage
+        name: StepFun Pricing and Updates
+        url: https://platform.stepfun.ai/docs/en/guides/pricing/details
+        credibility: S
+
+  - id: huawei_pangu
+    name: Huawei Pangu
+    region: CN
+    priority: P1
+    model_families: [Pangu, 盘古]
+    push_level: normal
+    sources:
+      - type: webpage
+        name: Huawei Pangu Models
+        url: https://support.huaweicloud.com/modelarts/
+        credibility: S
+
+influential_people:
+  - id: elon_musk
+    name: Elon Musk
+    aliases: [Elon Musk, Musk, 马斯克]
+    weight: 10
+  - id: jensen_huang
+    name: Jensen Huang
+    aliases: [Jensen Huang, 黄仁勋]
+    weight: 10
+  - id: sam_altman
+    name: Sam Altman
+    aliases: [Sam Altman, Altman]
+    weight: 9
+  - id: dario_amodei
+    name: Dario Amodei
+    aliases: [Dario Amodei]
+    weight: 9
+  - id: demis_hassabis
+    name: Demis Hassabis
+    aliases: [Demis Hassabis]
+    weight: 9
+  - id: mark_zuckerberg
+    name: Mark Zuckerberg
+    aliases: [Mark Zuckerberg, Zuckerberg]
+    weight: 8
+  - id: andrej_karpathy
+    name: Andrej Karpathy
+    aliases: [Andrej Karpathy, Karpathy]
+    weight: 8
+  - id: li_kaifu
+    name: Kai-Fu Lee
+    aliases: [Kai-Fu Lee, 李开复]
+    weight: 7
+
+event_keywords:
+  release:
+    - announces
+    - announced
+    - introduces
+    - introducing
+    - launched
+    - releases
+    - 发布
+    - 推出
+    - 上线
+    - 开源
+  update:
+    - updated
+    - upgrade
+    - improved
+    - optimization
+    - faster
+    - cheaper
+    - 更快
+    - 升级
+    - 更新
+    - 优化
+    - 降价
+    - 提升
+  deprecation:
+    - deprecated
+    - deprecating
+    - retired
+    - shutdown
+    - removed
+    - 下架
+    - 停用
+    - 弃用
+    - 退役
+    - 删除
