@@ -67,11 +67,12 @@ docker compose run --rm -e DRY_RUN=true model-alert model-alert once
 - 限制 CPU 和内存
 - 限制日志大小
 - 独立 bridge 网络
+- 使用 Docker 命名卷保存 SQLite 状态库，不依赖宿主机目录权限
 
 ## 配置文件
 
 - `config/providers.yaml`：厂商注册表和来源配置
-- `data/model_alert.sqlite3`：本地状态库
+- `model-alert-data` Docker 命名卷：本地状态库
 
 ## 说明
 

@@ -23,7 +23,7 @@ services:
       LLM_MODEL: ${LLM_MODEL:-}
     volumes:
       - ./config:/app/config:ro
-      - ./data:/app/data
+      - model-alert-data:/app/data
     tmpfs:
       - /tmp:size=64m,noexec,nosuid,nodev
     networks:
@@ -37,3 +37,6 @@ services:
 networks:
   model-alert-net:
     driver: bridge
+
+volumes:
+  model-alert-data:
