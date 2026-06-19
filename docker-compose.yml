@@ -12,6 +12,9 @@ services:
       - ALL
     environment:
       TZ: Asia/Shanghai
+      LANG: C.UTF-8
+      LC_ALL: C.UTF-8
+      PYTHONUTF8: "1"
       WECHAT_WEBHOOK_URL: ${WECHAT_WEBHOOK_URL}
       POLL_INTERVAL_MINUTES: ${POLL_INTERVAL_MINUTES:-30}
       EVENT_SETTLE_MINUTES: ${EVENT_SETTLE_MINUTES:-45}

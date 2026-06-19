@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+
 import httpx
 
 from .settings import Settings
@@ -18,7 +20,12 @@ class WeComNotifier:
             "msgtype": "markdown",
             "markdown": {"content": markdown[:3900]},
         }
-        response = httpx.post(self.settings.wechat_webhook_url, json=payload, timeout=15)
+        response = httpx.post(
+            self.settings.wechat_webhook_url,
+            content=json.dumps(payload, ensure_ascii=False).encode("utf-8"),
+            headers={"Content-Type": "application/json; charset=utf-8"},
+            timeout=15,
+        )
         response.raise_for_status()
         data = response.json()
         if data.get("errcode") != 0:
