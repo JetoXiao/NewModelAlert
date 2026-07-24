@@ -33,7 +33,7 @@ def _bool_env(name: str, default: bool = False) -> bool:
 class Settings:
     registry_path: Path = Path(os.getenv("REGISTRY_PATH", "config/providers.yaml"))
     db_path: Path = Path(os.getenv("DB_PATH", "data/model_alert.sqlite3"))
-    poll_interval_minutes: int = int(os.getenv("POLL_INTERVAL_MINUTES", "30"))
+    poll_interval_minutes: int = int(os.getenv("POLL_INTERVAL_MINUTES", "120"))
     event_settle_minutes: int = int(os.getenv("EVENT_SETTLE_MINUTES", "45"))
     pending_event_max_age_hours: int = int(os.getenv("PENDING_EVENT_MAX_AGE_HOURS", "72"))
     catchup_baseline_after_hours: int = int(os.getenv("CATCHUP_BASELINE_AFTER_HOURS", "72"))
