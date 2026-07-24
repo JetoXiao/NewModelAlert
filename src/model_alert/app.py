@@ -102,7 +102,6 @@ def run_scheduler() -> None:
         id="model-alert-scan",
         max_instances=1,
         coalesce=True,
-        next_run_time=None,
     )
     print(f"[info] scheduler started; interval={settings.poll_interval_minutes} minutes")
     runner.run_once()

@@ -11,8 +11,24 @@ providers:
         url: https://openai.com/news/rss.xml
         credibility: S
       - type: webpage
+        name: OpenAI News
+        url: https://openai.com/news/
+        credibility: S
+      - type: webpage
+        name: OpenAI GPT-5.6
+        url: https://openai.com/index/gpt-5-6/
+        credibility: S
+      - type: webpage
+        name: OpenAI GPT-5.6 Sol Preview
+        url: https://openai.com/index/previewing-gpt-5-6-sol/
+        credibility: S
+      - type: webpage
         name: OpenAI Models Docs
-        url: https://platform.openai.com/docs/models
+        url: https://developers.openai.com/api/docs/models
+        credibility: S
+      - type: webpage
+        name: OpenAI API Model Docs
+        url: https://developers.openai.com/api/docs/models/gpt-5.6-sol
         credibility: S
       - type: webpage
         name: OpenAI Pricing
@@ -29,6 +45,18 @@ providers:
       - type: webpage
         name: Anthropic News
         url: https://www.anthropic.com/news
+        credibility: S
+      - type: webpage
+        name: Claude Fable
+        url: https://www.anthropic.com/claude/fable
+        credibility: S
+      - type: webpage
+        name: Claude Opus 5 News
+        url: https://www.anthropic.com/news/claude-opus-5
+        credibility: S
+      - type: webpage
+        name: Claude Platform Docs
+        url: https://platform.claude.com/docs
         credibility: S
       - type: webpage
         name: Claude Models Docs
@@ -165,6 +193,26 @@ providers:
       - type: webpage
         name: Moonshot API Models
         url: https://platform.moonshot.cn/docs/guide/migrating-from-openai-to-kimi-k2
+        credibility: S
+      - type: webpage
+        name: Moonshot AI
+        url: https://www.moonshot.ai/
+        credibility: S
+      - type: webpage
+        name: Kimi API Platform
+        url: https://platform.kimi.ai/
+        credibility: S
+      - type: webpage
+        name: Kimi K3 Quickstart
+        url: https://platform.kimi.ai/docs/guide/kimi-k3-quickstart
+        credibility: S
+      - type: webpage
+        name: Kimi Models
+        url: https://platform.kimi.ai/docs/models
+        credibility: S
+      - type: webpage
+        name: Kimi Code What's New
+        url: https://www.kimi.com/code/docs/kimi-code/whats-new.html
         credibility: S
       - type: webpage
         name: Moonshot Pricing

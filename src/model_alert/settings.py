@@ -35,6 +35,8 @@ class Settings:
     db_path: Path = Path(os.getenv("DB_PATH", "data/model_alert.sqlite3"))
     poll_interval_minutes: int = int(os.getenv("POLL_INTERVAL_MINUTES", "30"))
     event_settle_minutes: int = int(os.getenv("EVENT_SETTLE_MINUTES", "45"))
+    pending_event_max_age_hours: int = int(os.getenv("PENDING_EVENT_MAX_AGE_HOURS", "72"))
+    catchup_baseline_after_hours: int = int(os.getenv("CATCHUP_BASELINE_AFTER_HOURS", "72"))
     bootstrap_notify: bool = _bool_env("BOOTSTRAP_NOTIFY", False)
     dry_run: bool = _bool_env("DRY_RUN", False)
     wechat_webhook_url: str = os.getenv("WECHAT_WEBHOOK_URL", "")

@@ -214,7 +214,7 @@ class Store:
             )
             return inserted
 
-    def pending_events_ready(self, settle_minutes: int) -> list[sqlite3.Row]:
+    def pending_events_ready(self, settle_minutes: int, max_age_hours: int) -> list[sqlite3.Row]:
         with self.connect() as conn:
             return list(
                 conn.execute(
@@ -223,11 +223,25 @@ class Store:
                     from events
                     where status = 'pending'
                       and datetime(first_seen_at) <= datetime('now', ?)
+                      and datetime(first_seen_at) >= datetime('now', ?)
                     order by provider_priority, first_seen_at
                     """,
-                    (f"-{settle_minutes} minutes",),
+                    (f"-{settle_minutes} minutes", f"-{max_age_hours} hours"),
                 )
             )
+
+    def expire_stale_pending(self, max_age_hours: int) -> int:
+        with self.connect() as conn:
+            cursor = conn.execute(
+                """
+                update events
+                set status = 'expired'
+                where status = 'pending'
+                  and datetime(first_seen_at) < datetime('now', ?)
+                """,
+                (f"-{max_age_hours} hours",),
+            )
+            return cursor.rowcount
 
     def get_event(self, signature: str) -> sqlite3.Row | None:
         with self.connect() as conn:

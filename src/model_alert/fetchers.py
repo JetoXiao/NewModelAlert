@@ -14,6 +14,26 @@ from .settings import Settings
 from .text import clean_text, short_text, stable_hash
 
 
+MODEL_OR_EVENT_TERMS = (
+    "model",
+    "models",
+    "release",
+    "releases",
+    "announcing",
+    "introducing",
+    "gpt",
+    "claude",
+    "gemini",
+    "kimi",
+    "qwen",
+    "glm",
+    "deepseek",
+    "发布",
+    "上线",
+    "模型",
+)
+
+
 class Fetcher:
     def __init__(self, settings: Settings) -> None:
         self.settings = settings
@@ -71,7 +91,7 @@ class Fetcher:
         title = clean_text(title) or source.name
         summary = short_text(summary, 1200)
         url = url or source.url or ""
-        content_hash = stable_hash(f"{provider.id}|{source.name}|{title}|{url}|{summary[:200]}")
+        content_hash = stable_hash(f"{provider.id}|{source.name}|{title}|{url}|{summary}")
         return CandidateItem(
             provider_id=provider.id,
             provider_name=provider.name,
@@ -111,12 +131,26 @@ class Fetcher:
 
     def _fetch_webpage(self, provider: Provider, source: Source) -> list[CandidateItem]:
         response = self._get(source.url or "")
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.content, "html.parser")
         for element in soup(["script", "style", "noscript", "svg"]):
             element.decompose()
 
         candidates: list[CandidateItem] = []
         seen_urls: set[str] = set()
+
+        page_title = clean_text(soup.title.get_text(" ")) if soup.title else source.name
+        page_body = short_text(clean_text(soup.get_text(" ")), 5000)
+        candidates.append(
+            self._candidate(
+                provider,
+                source,
+                title=f"{source.name} Snapshot: {page_title}",
+                url=source.url or "",
+                summary=page_body,
+                published_at=None,
+            )
+        )
+
         for heading in soup.find_all(["h1", "h2", "h3"])[:25]:
             title = clean_text(heading.get_text(" "))
             if len(title) < 4:
@@ -146,16 +180,25 @@ class Fetcher:
                 )
             )
 
-        if not candidates:
-            title = clean_text(soup.title.get_text(" ")) if soup.title else source.name
-            body = short_text(clean_text(soup.get_text(" ")), 1600)
+        for anchor in soup.find_all("a", href=True)[:160]:
+            title = clean_text(anchor.get_text(" "))
+            href = anchor.get("href") or ""
+            haystack = f"{title} {href}".lower()
+            if len(title) < 4 or not any(term in haystack for term in MODEL_OR_EVENT_TERMS):
+                continue
+            url = urljoin(source.url or "", href)
+            key = f"{title}|{url}"
+            if key in seen_urls:
+                continue
+            seen_urls.add(key)
+            parent_text = clean_text(anchor.find_parent().get_text(" ")) if anchor.find_parent() else title
             candidates.append(
                 self._candidate(
                     provider,
                     source,
                     title=title,
-                    url=source.url or "",
-                    summary=body,
+                    url=url,
+                    summary=parent_text,
                     published_at=None,
                 )
             )

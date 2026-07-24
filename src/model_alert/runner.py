@@ -15,6 +15,7 @@ from .store import Store
 
 
 BOOTSTRAP_DONE_KEY = "bootstrap_done_at"
+SCAN_SUCCESS_KEY = "last_successful_scan_at"
 
 
 class MonitorRunner:
@@ -29,8 +30,16 @@ class MonitorRunner:
         if not self.settings.wechat_webhook_url:
             print("[warn] WECHAT_WEBHOOK_URL is empty; notifications will be printed only")
         bootstrap = self.store.get_kv(BOOTSTRAP_DONE_KEY) is None and not self.settings.bootstrap_notify
+        last_successful_scan = self.store.get_kv(SCAN_SUCCESS_KEY)
+        catchup_baseline = (
+            not bootstrap
+            and not self.settings.bootstrap_notify
+            and self._scan_gap_exceeds_threshold(last_successful_scan)
+        )
         if bootstrap:
             print("[info] first run baseline mode enabled; historical items will not be pushed")
+        elif catchup_baseline:
+            print("[warn] long scan gap detected; current scan will refresh baseline without pushing historical backlog")
 
         fetcher = Fetcher(self.settings)
         signals_seen = 0
@@ -44,22 +53,43 @@ class MonitorRunner:
                     signal = classify_item(provider, item, self.registry.event_keywords)
                     if signal is None:
                         continue
-                    self.store.upsert_signal(signal, bootstrap=bootstrap)
+                    self.store.upsert_signal(signal, bootstrap=bootstrap or catchup_baseline)
                     signals_seen += 1
         finally:
             fetcher.close()
 
-        if bootstrap:
+        expired = self.store.expire_stale_pending(self.settings.pending_event_max_age_hours)
+        if expired:
+            print(f"[info] expired stale pending events={expired}")
+
+        self.store.set_kv(SCAN_SUCCESS_KEY, datetime.now(timezone.utc).isoformat())
+
+        if bootstrap or catchup_baseline:
             self.store.set_kv(BOOTSTRAP_DONE_KEY, datetime.now(timezone.utc).isoformat())
-            print(f"[info] baseline captured; signals={signals_seen}")
+            print(f"[info] baseline refreshed; signals={signals_seen}")
             return
 
         print(f"[info] scan complete; new_signals={signals_seen}")
         self._send_ready_main_notifications()
         self._send_major_supplements()
 
+    def _scan_gap_exceeds_threshold(self, last_successful_scan: str | None) -> bool:
+        if not last_successful_scan:
+            return True
+        try:
+            last = datetime.fromisoformat(last_successful_scan.replace("Z", "+00:00"))
+            if last.tzinfo is None:
+                last = last.replace(tzinfo=timezone.utc)
+        except ValueError:
+            return True
+        gap = datetime.now(timezone.utc) - last.astimezone(timezone.utc)
+        return gap.total_seconds() >= self.settings.catchup_baseline_after_hours * 3600
+
     def _send_ready_main_notifications(self) -> None:
-        ready = self.store.pending_events_ready(self.settings.event_settle_minutes)
+        ready = self.store.pending_events_ready(
+            self.settings.event_settle_minutes,
+            self.settings.pending_event_max_age_hours,
+        )
         if not ready:
             print("[info] no settled pending event ready for notification")
             return
