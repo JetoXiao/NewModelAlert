@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import hashlib
 import re
+import warnings
 from html import unescape
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, MarkupResemblesLocatorWarning
 
 
 WHITESPACE_RE = re.compile(r"\s+")
@@ -23,7 +24,9 @@ MODELISH_RE = re.compile(
 
 def clean_text(value: str) -> str:
     value = unescape(value or "")
-    value = BeautifulSoup(value, "html.parser").get_text(" ")
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", MarkupResemblesLocatorWarning)
+        value = BeautifulSoup(value, "html.parser").get_text(" ")
     return WHITESPACE_RE.sub(" ", value).strip()
 
 
