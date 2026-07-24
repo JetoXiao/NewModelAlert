@@ -31,6 +31,8 @@ def classify_item(
         return None
 
     if not best_event:
+        if " snapshot:" in item.title.lower():
+            return None
         best_event = "update"
 
     is_official = item.source_type in OFFICIAL_SOURCE_TYPES and item.source_credibility in {"S", "A"}
