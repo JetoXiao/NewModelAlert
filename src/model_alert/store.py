@@ -297,6 +297,7 @@ class Store:
                     select *
                     from events
                     where status = 'notified'
+                      and event_type = 'release'
                       and datetime(main_notified_at) >= datetime('now', ?)
                       and supplement_count < 3
                     order by main_notified_at desc
@@ -304,3 +305,32 @@ class Store:
                     (f"-{hours} hours",),
                 )
             )
+
+    def quiet_non_release_events(self) -> int:
+        with self.connect() as conn:
+            cursor = conn.execute(
+                """
+                update events
+                set status = 'ignored'
+                where event_type != 'release'
+                  and status in ('pending', 'notified')
+                """
+            )
+            return cursor.rowcount
+
+    def quiet_generic_release_events(self, generic_hints: set[str]) -> int:
+        if not generic_hints:
+            return 0
+        placeholders = ",".join("?" for _ in generic_hints)
+        with self.connect() as conn:
+            cursor = conn.execute(
+                f"""
+                update events
+                set status = 'ignored'
+                where event_type = 'release'
+                  and status in ('pending', 'notified')
+                  and lower(model_hint) in ({placeholders})
+                """,
+                tuple(sorted(generic_hints)),
+            )
+            return cursor.rowcount

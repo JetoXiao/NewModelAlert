@@ -10,6 +10,7 @@ from .runner import MonitorRunner
 from .settings import Settings
 from .store import Store
 from .notifier import WeComNotifier
+from .text import generic_model_hints
 
 
 def build_runner() -> MonitorRunner:
@@ -29,7 +30,7 @@ def send_test() -> None:
     notifier = WeComNotifier(settings)
     notifier.send_markdown(
         "New Model Alert 测试",
-        "**New Model Alert 测试消息**\n\n企业微信机器人已连通。后续只有模型发布、更新、下架或重大补充消息才会推送。",
+        "**New Model Alert 测试消息**\n\n企业微信机器人已连通。后续只推送具体新模型发布；补充消息只在超高影响力人物明确点名该模型时发送。",
     )
 
 
@@ -43,7 +44,7 @@ def send_sample() -> None:
 评分：**91/100（强烈关注）**
 可信度：S（模拟官方公告）；来源数：3（模拟）
 事件类型：新模型发布
-推送策略：主消息，一次性汇总；后续仅在重大补充时推送。
+推送策略：主消息，一次性汇总；后续仅在超高影响力人物明确点名该模型时补推。
 
 一句话结论：Anthropic 模拟发布 `claude-fable5`，定位为 Claude Fable 系列的新一代长任务与创意写作模型，重点提升多轮规划、长上下文一致性和工具调用稳定性。
 
@@ -60,20 +61,13 @@ def send_sample() -> None:
 - 成本/速度：测试数据中标记为待官方价格页确认。
 - API 兼容性：模拟保持 Claude Messages API 兼容。
 
-市场热度（模拟）：78/100
-开发者讨论量（模拟）：GitHub/论坛相关信号约 126 条；Hacker News 相关讨论 18 条；相关仓库星标合计约 8.4k。
+重要人物提及：暂无明确命中。若后续出现 Elon Musk、Jensen Huang、Sam Altman、Dario Amodei 等超高影响力人物明确点名 `claude-fable5`，系统会单独补推。
 
-市场评论摘要（模拟）：
-- 开发者主要关注它是否能替代 Sonnet/Opus 在长任务 Agent 场景中的位置。
-- 企业用户关注价格、速率限制和上下文窗口是否同步升级。
-- 创作者社区关注长篇写作一致性和可控风格。
-
-重要人物/机构评价：暂未命中重大补充阈值。若后续出现 Elon Musk、Jensen Huang、Sam Altman、Dario Amodei 等高影响评价，系统会单独补推。
+不会触发补推的内容：普通社区讨论、GitHub 搜索量、Hacker News 热度、媒体转述和泛泛的产品线讨论。
 
 来源（模拟）：
 > Anthropic News：claude-fable5 announcement（测试）
 > Claude Models Docs：claude-fable5 model card（测试）
-> Developer discussion scan：GitHub / Hacker News 热度快照（测试）
 """
     notifier.send_markdown("测试数据 claude-fable5", markdown)
 
@@ -86,6 +80,19 @@ def show_registry() -> None:
             f"{provider.priority} {provider.id} {provider.name} "
             f"sources={len(provider.sources)} families={','.join(provider.model_families)}"
         )
+
+
+def cleanup_state() -> None:
+    settings = Settings()
+    registry = load_registry(settings.registry_path)
+    store = Store(settings.db_path)
+    changed_non_release = store.quiet_non_release_events()
+    generic_hints: set[str] = set()
+    for provider in registry.providers:
+        generic_hints.update(generic_model_hints(provider.model_families, provider.name))
+    changed_generic = store.quiet_generic_release_events(generic_hints)
+    print(f"[info] ignored non-release pending/notified events={changed_non_release}")
+    print(f"[info] ignored generic release pending/notified events={changed_generic}")
 
 
 def run_scheduler() -> None:
@@ -110,7 +117,12 @@ def run_scheduler() -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("command", nargs="?", default="run", choices=["run", "once", "test", "sample", "registry"])
+    parser.add_argument(
+        "command",
+        nargs="?",
+        default="run",
+        choices=["run", "once", "test", "sample", "registry", "cleanup-state"],
+    )
     parser.add_argument("--once", action="store_true", help="Run one scan and exit.")
     args = parser.parse_args()
 
@@ -122,6 +134,8 @@ def main() -> None:
         send_sample()
     elif args.command == "registry":
         show_registry()
+    elif args.command == "cleanup-state":
+        cleanup_state()
     else:
         try:
             run_scheduler()

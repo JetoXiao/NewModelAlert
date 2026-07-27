@@ -45,17 +45,13 @@ class LlmSummarizer:
                                 "event_type": event["event_type"],
                                 "score": score,
                             },
-                            "heat": {
-                                "score": heat.score,
-                                "hn_hits": heat.hn_hits,
-                                "github_hits": heat.github_hits,
-                                "github_stars": heat.github_stars,
-                                "influential_mentions": heat.influential_mentions,
-                            },
+                            "influential_mentions": heat.influential_mentions,
                             "sources": facts,
                             "task": (
-                                "生成不超过350字的推送正文，包含：事件一句话结论、具体更新内容、"
-                                "相对上一代/旧版本的变化、市场热度、开发者讨论量、需要我关注的行动建议。"
+                                "生成不超过350字的中文推送正文，只关注新模型发布本身，包含："
+                                "事件一句话结论、具体发布内容、相对上一代/旧版本的变化、"
+                                "我需要关注的行动建议。不要写普通社区讨论、GitHub 搜索量、"
+                                "Hacker News 热度、开发者讨论量或媒体转述。"
                             ),
                         },
                         ensure_ascii=False,

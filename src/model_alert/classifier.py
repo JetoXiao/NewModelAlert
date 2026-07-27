@@ -2,13 +2,20 @@ from __future__ import annotations
 
 from .config import Provider
 from .models import CandidateItem, EventSignal
-from .text import clean_text, model_hint, normalize_signature_part, stable_hash
+from .text import clean_text, is_specific_model_hint, model_hint, normalize_signature_part, stable_hash
 
 
 OFFICIAL_SOURCE_TYPES = {"rss", "webpage", "github"}
 EVENT_WEIGHTS = {"release": 100, "update": 78, "deprecation": 95}
 CREDIBILITY_WEIGHTS = {"S": 100, "A": 82, "B": 62, "C": 35}
 PRIORITY_WEIGHTS = {"P0": 12, "P1": 6, "P2": 2}
+
+
+def _snapshot_names_model(item: CandidateItem, hint: str) -> bool:
+    if " snapshot:" not in item.title.lower():
+        return True
+    identity_text = f"{item.title} {item.source_name} {item.url}"
+    return normalize_signature_part(hint) in normalize_signature_part(identity_text)
 
 
 def classify_item(
@@ -48,6 +55,11 @@ def classify_item(
     confidence = max(0, min(100, confidence))
 
     hint = model_hint(text, provider.model_families, provider.name)
+    if best_event == "release" and not is_specific_model_hint(hint, provider.model_families, provider.name):
+        return None
+    if best_event == "release" and not _snapshot_names_model(item, hint):
+        return None
+
     title_part = normalize_signature_part(item.title)
     signature_base = f"{provider.id}:{best_event}:{normalize_signature_part(hint)}:{title_part}"
     if item.source_type == "webpage":

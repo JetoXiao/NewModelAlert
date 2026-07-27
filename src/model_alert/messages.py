@@ -36,14 +36,11 @@ def build_main_message(
             f"`{event['model_hint']}`。"
         )
         if first:
-            analysis += f"\n\n具体内容：{short_text(first['summary'], 420)}"
+            analysis += f"\n\n发布内容：{short_text(first['summary'], 420)}"
 
-    heat_line = (
-        f"市场热度：{heat.score}/100；Hacker News 相关信号 {heat.hn_hits} 条，"
-        f"GitHub 相关仓库/讨论约 {heat.github_hits} 条，相关仓库星标合计约 {heat.github_stars}。"
-    )
+    influence_line = "重要人物提及：暂无明确命中。"
     if heat.influential_mentions:
-        heat_line += " 重要人物提及：" + "、".join(sorted(set(heat.influential_mentions))) + "。"
+        influence_line = "重要人物提及：" + "、".join(sorted(set(heat.influential_mentions))) + "。"
 
     markdown = f"""**{title}**
 
@@ -52,9 +49,9 @@ def build_main_message(
 
 {analysis}
 
-{heat_line}
+{influence_line}
 
-处理策略：本事件已作为主消息推送，后续只有重大进展、重要人物评价或热度显著上升才会补充推送。
+处理策略：本事件已作为主消息推送。后续只在超高影响力人物明确点名该模型时补充推送；普通社区讨论、GitHub 搜索量、Hacker News 热度和媒体转述不会触发补推。
 
 来源：
 {chr(10).join(source_lines)}
@@ -77,11 +74,7 @@ def build_supplement_message(
 
 补充原因：**{reason}**
 
-当前市场热度：{heat.score}/100；Hacker News 相关信号 {heat.hn_hits} 条，GitHub 相关仓库/讨论约 {heat.github_hits} 条。
-
-重要人物提及：{("、".join(sorted(set(heat.influential_mentions))) if heat.influential_mentions else "暂无明确命中")}
-
-这条是对已推送模型事件的补充，不会重复发送主事件内容。
+这条补充只因为超高影响力人物明确点名该模型而发送，不会因为社区讨论量或市场热度发送。
 
 来源：
 {chr(10).join(source_lines)}

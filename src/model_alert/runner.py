@@ -53,6 +53,8 @@ class MonitorRunner:
                     signal = classify_item(provider, item, self.registry.event_keywords)
                     if signal is None:
                         continue
+                    if signal.event_type != "release":
+                        continue
                     self.store.upsert_signal(signal, bootstrap=bootstrap or catchup_baseline)
                     signals_seen += 1
         finally:
@@ -97,6 +99,8 @@ class MonitorRunner:
         heat_collector = HeatCollector(self.settings, self.registry.influential_people)
         try:
             for event in ready:
+                if event["event_type"] != "release":
+                    continue
                 sources = self.store.get_event_sources(event["signature"])
                 heat = heat_collector.collect(event["provider_name"], event["model_hint"])
                 score = event_score(event, len(sources), heat)
